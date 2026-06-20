@@ -1,0 +1,16 @@
+[workspace]
+members = ["maturity-core", "maturity-macro", "maturity-report"]
+default-members = ["maturity-core", "maturity-macro", "maturity-report"]
+resolver = "3"
+
+[workspace.package]
+version = "0.0.1"
+edition = "2024"
+license = "Apache-2.0"
+rust-version = "1.94.1"
+
+[workspace.dependencies]
+# Maturity or self dependencies
+maturity-core = { path = "maturity-core" }
+maturity-macro = { path = "maturity-macro" }
+maturity-report = { path = "maturity-report" }

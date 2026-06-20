@@ -1,0 +1,15 @@
+[package]
+name = "maturity-report"
+description = "CLI tool for analysing Rust projects and generating maturity reports."
+keywords = ["maturity", "stability", "metrics", "report"]
+categories = [
+    "development-tools",
+    "development-tools::cargo-plugins",
+    "command-line-utilities",
+]
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
