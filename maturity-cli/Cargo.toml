@@ -1,0 +1,11 @@
+[package]
+name = "maturity-cli"
+description = "CLI for reporting maturity reports."
+keywords = ["maturity", "stability", "metrics", "cli"]
+categories = ["development-tools", "command-line-utilities"]
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
