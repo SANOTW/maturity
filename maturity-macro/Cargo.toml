@@ -1,6 +1,6 @@
 [package]
 name = "maturity-macro"
-description = "Procedural macros for annotating code maturity and stability."
+description = "Procedural macros for code maturity annotations."
 keywords = ["maturity", "stability", "metrics", "attribute", "annotation"]
 categories = ["development-tools"]
 version.workspace = true
