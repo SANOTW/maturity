@@ -1,15 +1,33 @@
 [package]
 name = "maturity-report"
-description = "CLI tool for analysing Rust projects and generating maturity reports."
+description = "Project scanning, metrics collection, and report generation library."
 keywords = ["maturity", "stability", "metrics", "report"]
-categories = [
-    "development-tools",
-    "development-tools::cargo-plugins",
-    "command-line-utilities",
-]
+categories = ["development-tools"]
 version.workspace = true
 edition.workspace = true
 license.workspace = true
 rust-version.workspace = true
 
 [dependencies]
+# self
+maturity-core.workspace = true
+maturity-macro.workspace = true
+
+# utilities
+## logging
+tracing.workspace = true
+tracing-subscriber.workspace = true
+
+## directory traversal
+ignore.workspace = true
+
+## error handling
+thiserror.workspace = true
+## time
+chrono.workspace = true
+
+# CLI argument parser
+clap.workspace = true
+
+# parsing library for the stream of rust tokens
+syn.workspace = true
