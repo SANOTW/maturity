@@ -1,6 +1,6 @@
 [package]
 name = "maturity-cli"
-description = "CLI for reporting maturity reports."
+description = "Standalone CLI for generating maturity reports."
 keywords = ["maturity", "stability", "metrics", "cli"]
 categories = ["development-tools", "command-line-utilities"]
 version.workspace = true
@@ -9,3 +9,4 @@ license.workspace = true
 rust-version.workspace = true
 
 [dependencies]
+maturity-report.workspace = true
