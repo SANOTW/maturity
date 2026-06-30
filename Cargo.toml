@@ -1,16 +1,40 @@
 [workspace]
-members = ["maturity-core", "maturity-macro", "maturity-report"]
+members = [
+    "cargo-maturity",
+    "maturity-cli",
+    "maturity-core",
+    "maturity-macro",
+    "maturity-report",
+]
 default-members = ["maturity-core", "maturity-macro", "maturity-report"]
 resolver = "3"
 
 [workspace.package]
-version = "0.0.1"
+version = "0.1.0"
 edition = "2024"
 license = "Apache-2.0"
 rust-version = "1.94.1"
 
 [workspace.dependencies]
 # Maturity or self dependencies
+cargo-maturity = { path = "cargo-maturity" }
+maturity-cli = { path = "maturity-cli" }
 maturity-core = { path = "maturity-core" }
 maturity-macro = { path = "maturity-macro" }
 maturity-report = { path = "maturity-report" }
+
+
+# Utilities
+# logging
+tracing = "0.1.44"
+tracing-subscriber = { version = "0.3.23", features = ["env-filter"] }
+# fast recursive directory iterator that respects various filters such as globs, file types and `.gitignore` files.
+ignore = "0.4.26"
+# time - related
+chrono = "0.4.45"
+# error handling
+thiserror = "2.0.18"
+# command line argument parser for rust
+clap = { version = "4.6.1", features = ["derive"] }
+# parsing a stream of Rust tokens into a syntax tree of Rust source code
+syn = { version = "2.0.118", features = ["full", "extra-traits"] }
