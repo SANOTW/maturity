@@ -1,6 +1,6 @@
 [package]
 name = "cargo-maturity"
-description = "Cargo subcommand for generating maturity reports"
+description = "Cargo subcommand for generating maturity reports."
 keywords = ["maturity", "stability", "metrics", "cargo-plugin"]
 categories = ["development-tools", "development-tools::cargo-plugins"]
 version.workspace = true
@@ -9,3 +9,4 @@ license.workspace = true
 rust-version.workspace = true
 
 [dependencies]
+maturity-report.workspace = true
