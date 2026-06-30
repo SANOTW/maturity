@@ -33,3 +33,9 @@ impl Reporter {
         println!("{}", metrics)
     }
 }
+
+impl Default for Reporter {
+    fn default() -> Self {
+        Self::new()
+    }
+}

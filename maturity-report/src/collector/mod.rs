@@ -66,7 +66,7 @@ impl Collector {
                         // TODO: Extract this into a helper function.
                         for attribute in item_enum.attrs {
                             for segment in &attribute.meta.path().segments {
-                                if "maturity".to_string() == segment.ident.to_string() {
+                                if segment.ident == "maturity" {
                                     metrics.increment_maturity_enums_count();
                                 }
                             }
@@ -79,7 +79,7 @@ impl Collector {
                     metrics.increment_functions_count();
                     for attribute in item_fn.attrs {
                         for segment in &attribute.meta.path().segments {
-                            if "maturity".to_string() == segment.ident.to_string() {
+                            if segment.ident == "maturity" {
                                 metrics.increment_maturity_functions_count();
                             }
                         }
@@ -95,7 +95,7 @@ impl Collector {
 
                     for attribute in item_struct.attrs {
                         for segment in &attribute.meta.path().segments {
-                            if "maturity".to_string() == segment.ident.to_string() {
+                            if segment.ident == "maturity" {
                                 metrics.increment_maturity_structs_count();
                             }
                         }
@@ -106,7 +106,7 @@ impl Collector {
 
                     for attribute in item_trait.attrs {
                         for segment in &attribute.meta.path().segments {
-                            if "maturity".to_string() == segment.ident.to_string() {
+                            if segment.ident == "maturity" {
                                 metrics.increment_maturity_traits_count();
                             }
                         }
@@ -120,5 +120,11 @@ impl Collector {
                 _ => {}
             }
         }
+    }
+}
+
+impl Default for Collector {
+    fn default() -> Self {
+        Self::new()
     }
 }

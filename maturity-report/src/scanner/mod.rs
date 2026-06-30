@@ -92,3 +92,9 @@ impl Scanner {
             .unwrap_or(false)
     }
 }
+
+impl Default for Scanner {
+    fn default() -> Self {
+        Self::new()
+    }
+}

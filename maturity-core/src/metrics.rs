@@ -4,9 +4,9 @@ use maturity_macro::maturity;
 use tracing::instrument;
 
 /// Aggregated metrics collected from a Rust project.
-/// 
+///
 /// Stores inventory information which into the fields.
-/// 
+///
 /// This struct essentially the foundation for the entire system. However as time goes this will change if need be.
 #[maturity]
 pub struct MetricCount {
@@ -68,24 +68,30 @@ impl MetricCount {
     }
 }
 
+impl Default for MetricCount {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl fmt::Display for MetricCount {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         writeln!(f, "Project: {}", self.project_name)?;
         writeln!(f, "Total Files Count: {}", self.total_files_count)?;
         writeln!(f, "Rust Files Count: {}", self.rust_files_count)?;
-        let _ = writeln!(f, "");
+        let _ = writeln!(f);
         let _ = writeln!(f, "Items");
         let _ = writeln!(f, "------");
-        let _ = writeln!(f, "");
+        let _ = writeln!(f);
         writeln!(f, "Structs Count: {}", self.structs_count)?;
         writeln!(f, "Enums Count: {}", self.enums_count)?;
         writeln!(f, "Traits Count: {}", self.traits_count)?;
         writeln!(f, "Functions Count: {}", self.functions_count)?;
 
-        let _ = writeln!(f, "");
+        let _ = writeln!(f);
         let _ = writeln!(f, "Maturity Items");
         let _ = writeln!(f, "------");
-        let _ = writeln!(f, "");
+        let _ = writeln!(f);
         writeln!(f, "Maturity Structs Count: {}", self.maturity_structs_count)?;
         writeln!(f, "Maturity Enums Count: {}", self.maturity_enums_count)?;
         writeln!(f, "Maturity Traits Count: {}", self.maturity_traits_count)?;
@@ -98,10 +104,10 @@ impl fmt::Display for MetricCount {
 }
 
 /// Getters and Setters
-/// 
+///
 /// Used to maintain a stable interface between crates.
-/// 
-/// This may eventually be replaced by generated code once the helper crate is implemented. Not replaced but this entire 
+///
+/// This may eventually be replaced by generated code once the helper crate is implemented. Not replaced but this entire
 /// impl Block will get nuked.
 impl MetricCount {
     #[instrument(level = "trace", skip_all)]
