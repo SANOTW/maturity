@@ -8,5 +8,9 @@ edition.workspace = true
 license.workspace = true
 rust-version.workspace = true
 
+[[bin]]
+name = "maturity"
+path = "src/main.rs"
+
 [dependencies]
 maturity-report.workspace = true
