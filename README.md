@@ -108,30 +108,30 @@ As projects grow, so do the number of TODOS, partially implemented systems, unve
 
 After let's say good amount of time, it becomes difficult to answer very basic questions to which when we started or not too far from when we started would be able to answer quite easily.
 
-- What is stable?
+### What is stable?
 
 As in what works just fine without any issues? At the beginning we would say "don't you dare touch xyz", or "xyz is stable", but after dependency additions, integrations, and enough changes, we suddenly understand... "This thing is far more volatile and unpredictable than we originally thought" Something became coupled too tightly... Something broke even though whatever in the world we changed had absolutely no relation to that! or that to it!
 Or... at least that's what we thought... "Surely this module and that module couldn't possibly be connected... RighT?..."
 
-- What is still experimental?
+### What is still experimental?
 
 We often create some experimental functions, leave it behind, and later "wait... it existed all this time???" When we do remember it however, then we wonder "Where in the world, did I even put that thing?" If we do find it who knows how... then we wonder in what state it is.
 
-- What remains unfinished?
+### What remains unfinished?
 
 Although we document things, we often end up using brute force first just to have it... working... and only then and only once it works, that we can have it slightly easier documenting it.... Document first, code later? Well... that sounds good... in theory... But it's more of "Let me see if this works~ hehehehe" or "Let me make this thing work first. Then I will clean up later.(ummm clean up?)" The problem is that sometimes we fail to achieve the goal and leave it for later. Maybe we leave a TODO. Maybe we write a comment. Or... we don't even write anything at all... Too tired.... Putting a TODO before even starting something feels strange. But saying: "This system is unfinished." somehow feels much more natural.
 
-- What has already been verified?
+### What has already been verified?
 
 We verify things, we run tests, perhaps we benchmark it and move on.
 And sometimes we just wonder "Did we actually verify this or did I simply imagine it verifying itself?" I mean the information might be somewhere... in the documentations. umm test files?.. benchmark results... The problem? Organisation. Naming. Date formats (not literally but files having date formats incrementing... hm? take my utilities logger and have it run several times. Once you have ran it i don't know double digit times. Forget checking logging files contents and look at that log folder itself. names of the files. yes.). Experimental benchmarks. Incrementing numbers... All wonderful ideas... until they aren't... Solution is simple, "Just take the latest one and that's the solution!" Genius! Except... The latest was an experimental run out of excitement immediately after finding the actual best result. And not once... Not to mention that haven't renamed or copied the precious one out of excitement. Wonderful. Now we have to go through every single file to find the best results... great.
 
-- What still requires documentation?
+### What still requires documentation?
 
 Sometimes documentation can wait. A function name, its structure or the algorithm itself might already explain everything we need.
 We look at it and think: "yeeaaaah... this one doesn't really need documentation." And perhaps it doesn't. But. when projects grow uncontrollably large... Things become.. far less obvious.. 90% of the project is documented. The remaining 10%? Well.... We know it exists somewhere... Probably... "eeeeeh, Good enough~" ....right?
 
-- Where should development continue?
+### Where should development continue?
 
 This question usually appears when everything seems to work just fine. But why do I feel like... something is left unfinished? I think there are optimisations possible? Are there some planned features that hasn't been completed? or systems need verification... We either documented it or TODO'ed it, well for TODO's its wonderful we got plenty of help with that. Documentations helps as well. But reading through hundreds of pages or dozens of modules just to figure out what comes next..... "Tha can become quite heavy".
 
