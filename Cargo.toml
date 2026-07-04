@@ -15,6 +15,9 @@ edition = "2024"
 license = "Apache-2.0"
 rust-version = "1.94.1"
 
+repository = "https://codeberg.org/SANOTW/maturity.git"
+homepage = "https://codeberg.org/SANOTW/maturity.git"
+
 [workspace.dependencies]
 # Maturity or self dependencies
 cargo-maturity = { version = "0.1.0", path = "cargo-maturity" }
