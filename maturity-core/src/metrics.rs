@@ -1,30 +1,191 @@
 use core::fmt;
+use std::collections::BTreeMap;
 
 use maturity_macro::maturity;
 use tracing::instrument;
 
+/// Metrics tracking files related values.
+///
+/// ## Usage
+///
+/// ```rust
+/// use maturity_core::metrics::FileMetric;
+///
+/// let mut metrics = FileMetric::default();
+///
+/// metrics.increment(false);
+/// metrics.increment(true);
+///
+/// assert_eq!(metrics.total(), 2);
+/// assert_eq!(metrics.rust(), 1);
+/// ```
+#[maturity]
+#[derive(Debug, Default, Clone)]
+pub struct FileMetric {
+    /// Total count of general files
+    total: u64,
+    /// Total count of rust files
+    rust: u64,
+}
+
+impl FileMetric {
+    #[maturity]
+    #[instrument(level = "trace", skip_all)]
+    pub fn increment(&mut self, is_rust_file: bool) {
+        self.total += 1;
+
+        if is_rust_file {
+            self.rust += 1
+        }
+    }
+
+    #[maturity]
+    #[instrument(level = "trace", skip_all)]
+    pub fn total(&self) -> u64 {
+        self.total
+    }
+
+    #[maturity]
+    #[instrument(level = "trace", skip_all)]
+    pub fn rust(&self) -> u64 {
+        self.rust
+    }
+}
+
+// ----------------------------------------------
+
+/// Metrics tracking the values for the construct items.
+/// ///
+/// ## Usage
+///
+/// ```rust
+/// use maturity_core::metrics::ItemMetric;
+///
+/// let mut metrics = ItemMetric::default();
+///
+/// metrics.increment(false);
+/// metrics.increment(true);
+///
+/// assert_eq!(metrics.total(), 2);
+/// assert_eq!(metrics.maturity(), 1);
+/// ```
+#[maturity]
+#[derive(Debug, Default, Clone)]
+pub struct ItemMetric {
+    /// Total count of the item
+    total: u64,
+    /// Total count of the item with `#[maturity]` annotation on it
+    maturity: u64,
+}
+
+impl ItemMetric {
+    #[maturity]
+    #[instrument(level = "trace", skip_all)]
+    pub fn increment(&mut self, has_maturity: bool) {
+        self.total += 1;
+
+        if has_maturity {
+            self.maturity += 1;
+        }
+    }
+
+    #[maturity]
+    #[instrument(level = "trace", skip_all)]
+    pub fn total(&self) -> u64 {
+        self.total
+    }
+
+    #[maturity]
+    #[instrument(level = "trace", skip_all)]
+    pub fn maturity(&self) -> u64 {
+        self.maturity
+    }
+}
+
+// ----------------------------------------------
+
+/// ItemKinds matching the `syn` crate's `Item` enum as close as possible
+#[maturity]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum ItemKind {
+    Const,
+    Enum,
+    ExternCrate,
+    Function,
+    ForeignMod,
+    Implementation,
+    Macro,
+    Module,
+    Static,
+    Struct,
+    Trait,
+    TraitAlias,
+    Type,
+    Union,
+    Use,
+    Verbatim,
+}
+
+impl fmt::Display for ItemKind {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            ItemKind::Const => write!(f, "Consts"),
+            ItemKind::Enum => write!(f, "Enums"),
+            ItemKind::ExternCrate => write!(f, "External Crates"),
+            ItemKind::Function => write!(f, "Functions"),
+            ItemKind::ForeignMod => write!(f, "Foreign Modules"),
+            ItemKind::Implementation => write!(f, "Implementations"),
+            ItemKind::Macro => write!(f, "Macros"),
+            ItemKind::Module => write!(f, "Modules"),
+            ItemKind::Static => write!(f, "Statics"),
+            ItemKind::Struct => write!(f, "Structs"),
+            ItemKind::Trait => write!(f, "Traits"),
+            ItemKind::TraitAlias => write!(f, "Trait Aliases"),
+            ItemKind::Type => write!(f, "Types"),
+            ItemKind::Union => write!(f, "Unions"),
+            ItemKind::Use => write!(f, "Uses"),
+            ItemKind::Verbatim => write!(f, "Verbatim"),
+        }
+    }
+}
+
+// ----------------------------------------------
+
 /// Aggregated metrics collected from a Rust project.
 ///
-/// Stores inventory information which into the fields.
+/// Stores inventory information which are gathered into the fields.
 ///
 /// This struct essentially the foundation for the entire system. However as time goes this will change if need be.
+///
+/// Item metrics are stored in a `BTreeMap` to guarantee deterministic iteration order when generating reports and terminal
+/// output.
+///
+/// ## Usage
+///
+/// ```rust
+/// use maturity_core::metrics::MetricCount;
+/// use maturity_core::metrics::ItemKind;
+///
+/// let mut metric = MetricCount::new();
+///
+/// metric.file_mut().increment(true);
+/// metric.items_mut(ItemKind::Function).increment(true);
+///
+/// assert_eq!(metric.file().rust(), 1);
+/// assert_eq!(metric.items(ItemKind::Function).unwrap().maturity(), 1);
+/// ```
 #[maturity]
+#[derive(Debug, Clone)]
 pub struct MetricCount {
     project_name: String,
 
-    total_files_count: u64,
-    rust_files_count: u64,
+    file: FileMetric,
 
-    structs_count: u64,
-    maturity_structs_count: u64,
-    enums_count: u64,
-    maturity_enums_count: u64,
-    traits_count: u64,
-    maturity_traits_count: u64,
-    functions_count: u64,
-    maturity_functions_count: u64,
-
-    total: u64,
+    /// Stores metrics for rust constructs
+    ///
+    /// A `BTreeMap` is used instead of a `HashMap` to guarantee deterministic ordering during iteration and report
+    /// generation.
+    items: BTreeMap<ItemKind, ItemMetric>,
 }
 
 impl MetricCount {
@@ -32,83 +193,33 @@ impl MetricCount {
     #[maturity]
     #[instrument(level = "trace", name = "Metrics/new", skip_all)]
     pub fn new() -> Self {
-        Self {
-            project_name: String::new(),
-            total_files_count: 0,
-            rust_files_count: 0,
-            structs_count: 0,
-            maturity_structs_count: 0,
-            enums_count: 0,
-            maturity_enums_count: 0,
-            traits_count: 0,
-            maturity_traits_count: 0,
-            functions_count: 0,
-            maturity_functions_count: 0,
-            total: 0,
-        }
+        Self::default()
     }
 
+    /// Returns an iterator over all collected item metrics
+    ///
+    /// Iteration order is deterministic and follows the ordering defined by the `ItemKind`, as the internal storage uses a
+    /// `BTreeMap`
     #[maturity]
     #[instrument(level = "trace", skip_all)]
-    pub fn from(&mut self, metric: MetricCount) -> MetricCount {
-        Self {
-            project_name: metric.project_name().to_string(),
-            total_files_count: metric.total_files_count(),
-            rust_files_count: metric.rust_files_count(),
-            structs_count: metric.structs_count(),
-            maturity_structs_count: metric.maturity_structs_count(),
-            enums_count: metric.enums_count(),
-            maturity_enums_count: metric.maturity_enums_count(),
-            traits_count: metric.traits_count(),
-            maturity_traits_count: metric.maturity_traits_count(),
-            functions_count: metric.functions_count(),
-            maturity_functions_count: metric.maturity_functions_count(),
-            total: metric.total(),
-        }
+    pub fn items_iter(&self) -> impl Iterator<Item = (&ItemKind, &ItemMetric)> {
+        self.items.iter()
     }
 }
 
 impl Default for MetricCount {
     fn default() -> Self {
-        Self::new()
-    }
-}
-
-impl fmt::Display for MetricCount {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        writeln!(f, "Project: {}", self.project_name)?;
-        writeln!(f, "Total Files Count: {}", self.total_files_count)?;
-        writeln!(f, "Rust Files Count: {}", self.rust_files_count)?;
-        let _ = writeln!(f);
-        let _ = writeln!(f, "Items");
-        let _ = writeln!(f, "------");
-        let _ = writeln!(f);
-        writeln!(f, "Structs Count: {}", self.structs_count)?;
-        writeln!(f, "Enums Count: {}", self.enums_count)?;
-        writeln!(f, "Traits Count: {}", self.traits_count)?;
-        writeln!(f, "Functions Count: {}", self.functions_count)?;
-
-        let _ = writeln!(f);
-        let _ = writeln!(f, "Maturity Items");
-        let _ = writeln!(f, "------");
-        let _ = writeln!(f);
-        writeln!(f, "Maturity Structs Count: {}", self.maturity_structs_count)?;
-        writeln!(f, "Maturity Enums Count: {}", self.maturity_enums_count)?;
-        writeln!(f, "Maturity Traits Count: {}", self.maturity_traits_count)?;
-        writeln!(
-            f,
-            "Maturity Functions Count: {}",
-            self.maturity_functions_count
-        )
+        Self {
+            project_name: String::new(),
+            file: FileMetric::default(),
+            items: BTreeMap::new(),
+        }
     }
 }
 
 /// Getters and Setters
 ///
 /// Used to maintain a stable interface between crates.
-///
-/// This may eventually be replaced by generated code once the helper crate is implemented. Not replaced but this entire
-/// impl Block will get nuked.
 impl MetricCount {
     #[instrument(level = "trace", skip_all)]
     pub fn project_name(&self) -> &str {
@@ -116,163 +227,27 @@ impl MetricCount {
     }
 
     #[instrument(level = "trace", skip_all)]
-    pub fn set_project_name(&mut self, project_name: String) {
-        self.project_name = project_name
+    pub fn set_project_name(&mut self, name: String) {
+        self.project_name = name
     }
 
     #[instrument(level = "trace", skip_all)]
-    pub fn total_files_count(&self) -> u64 {
-        self.total_files_count
+    pub fn file(&self) -> &FileMetric {
+        &self.file
     }
 
     #[instrument(level = "trace", skip_all)]
-    pub fn set_total_files_count(&mut self, total_files_count: u64) {
-        self.total_files_count = total_files_count
+    pub fn file_mut(&mut self) -> &mut FileMetric {
+        &mut self.file
     }
 
     #[instrument(level = "trace", skip_all)]
-    pub fn increment_total_files_count(&mut self) {
-        self.total_files_count += 1
+    pub fn items(&self, kind: ItemKind) -> Option<&ItemMetric> {
+        self.items.get(&kind)
     }
 
     #[instrument(level = "trace", skip_all)]
-    pub fn rust_files_count(&self) -> u64 {
-        self.rust_files_count
-    }
-
-    #[instrument(level = "trace", skip_all)]
-    pub fn set_rust_files_count(&mut self, rust_files_count: u64) {
-        self.rust_files_count = rust_files_count
-    }
-
-    #[instrument(level = "trace", skip_all)]
-    pub fn increment_rust_files_count(&mut self) {
-        self.rust_files_count += 1
-    }
-
-    #[instrument(level = "trace", skip_all)]
-    pub fn structs_count(&self) -> u64 {
-        self.structs_count
-    }
-
-    #[instrument(level = "trace", skip_all)]
-    pub fn maturity_structs_count(&self) -> u64 {
-        self.maturity_structs_count
-    }
-
-    #[instrument(level = "trace", skip_all)]
-    pub fn set_maturity_structs_count(&mut self, maturity_structs_count: u64) {
-        self.maturity_structs_count = maturity_structs_count
-    }
-
-    #[instrument(level = "trace", skip_all)]
-    pub fn set_structs_count(&mut self, structs_count: u64) {
-        self.structs_count = structs_count
-    }
-
-    #[instrument(level = "trace", skip_all)]
-    pub fn increment_structs_count(&mut self) {
-        self.structs_count += 1
-    }
-
-    #[instrument(level = "trace", skip_all)]
-    pub fn increment_maturity_structs_count(&mut self) {
-        self.maturity_structs_count += 1
-    }
-
-    #[instrument(level = "trace", skip_all)]
-    pub fn enums_count(&self) -> u64 {
-        self.enums_count
-    }
-
-    #[instrument(level = "trace", skip_all)]
-    pub fn maturity_enums_count(&self) -> u64 {
-        self.maturity_enums_count
-    }
-
-    #[instrument(level = "trace", skip_all)]
-    pub fn set_maturity_enums_count(&mut self, maturity_enums_count: u64) {
-        self.maturity_enums_count = maturity_enums_count
-    }
-
-    #[instrument(level = "trace", skip_all)]
-    pub fn set_enums_count(&mut self, enums_count: u64) {
-        self.enums_count = enums_count
-    }
-
-    #[instrument(level = "trace", skip_all)]
-    pub fn increment_enums_count(&mut self) {
-        self.enums_count += 1
-    }
-
-    #[instrument(level = "trace", skip_all)]
-    pub fn increment_maturity_enums_count(&mut self) {
-        self.maturity_enums_count += 1
-    }
-
-    #[instrument(level = "trace", skip_all)]
-    pub fn traits_count(&self) -> u64 {
-        self.traits_count
-    }
-
-    #[instrument(level = "trace", skip_all)]
-    pub fn maturity_traits_count(&self) -> u64 {
-        self.maturity_traits_count
-    }
-
-    #[instrument(level = "trace", skip_all)]
-    pub fn set_maturity_traits_count(&mut self, maturity_traits_count: u64) {
-        self.maturity_traits_count = maturity_traits_count
-    }
-
-    #[instrument(level = "trace", skip_all)]
-    pub fn set_traits_count(&mut self, traits_count: u64) {
-        self.traits_count = traits_count
-    }
-
-    #[instrument(level = "trace", skip_all)]
-    pub fn increment_traits_count(&mut self) {
-        self.traits_count += 1
-    }
-
-    #[instrument(level = "trace", skip_all)]
-    pub fn increment_maturity_traits_count(&mut self) {
-        self.maturity_traits_count += 1
-    }
-
-    #[instrument(level = "trace", skip_all)]
-    pub fn functions_count(&self) -> u64 {
-        self.functions_count
-    }
-
-    #[instrument(level = "trace", skip_all)]
-    pub fn maturity_functions_count(&self) -> u64 {
-        self.maturity_functions_count
-    }
-
-    #[instrument(level = "trace", skip_all)]
-    pub fn set_functions_count(&mut self, functions_count: u64) {
-        self.functions_count = functions_count
-    }
-
-    #[instrument(level = "trace", skip_all)]
-    pub fn set_maturity_functions_count(&mut self, maturity_functions_count: u64) {
-        self.maturity_functions_count = maturity_functions_count
-    }
-
-    #[instrument(level = "trace", skip_all)]
-    pub fn increment_functions_count(&mut self) {
-        self.functions_count += 1
-    }
-
-    #[instrument(level = "trace", skip_all)]
-    pub fn increment_maturity_functions_count(&mut self) {
-        self.maturity_functions_count += 1
-    }
-}
-
-impl MetricCount {
-    pub fn total(&self) -> u64 {
-        self.total
+    pub fn items_mut(&mut self, kind: ItemKind) -> &mut ItemMetric {
+        self.items.entry(kind).or_default()
     }
 }
