@@ -57,12 +57,13 @@ impl Scanner {
         for result in Walk::new(&self.starting_directory) {
             match result {
                 Ok(entry) => {
-                    metrics.increment_total_files_count();
-                    // ensuring that only rust files are read and none else.
-                    if !self.is_rust_file(&entry) {
+                    let is_rust_file = self.is_rust_file(&entry);
+
+                    metrics.file_mut().increment(is_rust_file);
+
+                    if !is_rust_file {
                         continue;
                     }
-                    metrics.increment_rust_files_count();
 
                     rust_file_paths.push(entry.path().to_path_buf());
                 }

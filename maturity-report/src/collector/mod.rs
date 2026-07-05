@@ -9,7 +9,7 @@
 
 use std::path::PathBuf;
 
-use maturity_core::metrics::MetricCount;
+use maturity_core::metrics::{ItemKind, MetricCount};
 use maturity_macro::maturity;
 use syn::File;
 use tracing::instrument;
@@ -54,69 +54,94 @@ impl Collector {
     }
 
     /// Updates project metrics from a parsed rust syntax tree.
-    #[maturity]
+    #[maturity(status = "developing", todo = "Count internal items")]
+    #[instrument(level = "trace", skip_all)]
     fn collect_metrics(&mut self, file: File, metrics: &mut MetricCount) {
         for item in file.items {
             match item {
-                // syn::Item::Const(item_const) => todo!(),
-                syn::Item::Enum(item_enum) => {
-                    {
-                        metrics.increment_enums_count();
-
-                        // TODO: Extract this into a helper function.
-                        for attribute in item_enum.attrs {
-                            for segment in &attribute.meta.path().segments {
-                                if segment.ident == "maturity" {
-                                    metrics.increment_maturity_enums_count();
-                                }
-                            }
-                        }
-                    };
+                syn::Item::Const(item_const) => {
+                    metrics
+                        .items_mut(ItemKind::Const)
+                        .increment(self.has_maturity(&item_const.attrs));
                 }
-                // syn::Item::ExternCrate(item_extern_crate) => todo!(),
+                syn::Item::Enum(item_enum) => {
+                    metrics
+                        .items_mut(ItemKind::Enum)
+                        .increment(self.has_maturity(&item_enum.attrs));
+                }
+                syn::Item::ExternCrate(item_extern_crate) => {
+                    metrics
+                        .items_mut(ItemKind::ExternCrate)
+                        .increment(self.has_maturity(&item_extern_crate.attrs));
+                }
                 // This is module-wise function count.
                 syn::Item::Fn(item_fn) => {
-                    metrics.increment_functions_count();
-                    for attribute in item_fn.attrs {
-                        for segment in &attribute.meta.path().segments {
-                            if segment.ident == "maturity" {
-                                metrics.increment_maturity_functions_count();
-                            }
-                        }
-                    }
+                    metrics
+                        .items_mut(ItemKind::Function)
+                        .increment(self.has_maturity(&item_fn.attrs));
                 }
-                // syn::Item::ForeignMod(item_foreign_mod) => todo!(),
-                // syn::Item::Impl(item_impl) => todo!(),
-                // syn::Item::Macro(item_macro) => todo!(),
-                // syn::Item::Mod(item_mod) => todo!(),
-                // syn::Item::Static(item_static) => todo!(),
+                syn::Item::ForeignMod(item_foreign_mod) => {
+                    metrics
+                        .items_mut(ItemKind::ForeignMod)
+                        .increment(self.has_maturity(&item_foreign_mod.attrs));
+                }
+                syn::Item::Impl(item_impl) => {
+                    // TODO: Internal functions counting
+                    metrics
+                        .items_mut(ItemKind::Implementation)
+                        .increment(self.has_maturity(&item_impl.attrs));
+                }
+                syn::Item::Macro(item_macro) => {
+                    metrics
+                        .items_mut(ItemKind::Macro)
+                        .increment(self.has_maturity(&item_macro.attrs));
+                }
+                syn::Item::Mod(item_mod) => {
+                    metrics
+                        .items_mut(ItemKind::Module)
+                        .increment(self.has_maturity(&item_mod.attrs));
+                }
+                syn::Item::Static(item_static) => {
+                    metrics
+                        .items_mut(ItemKind::Static)
+                        .increment(self.has_maturity(&item_static.attrs));
+                }
                 syn::Item::Struct(item_struct) => {
-                    metrics.increment_structs_count();
-
-                    for attribute in item_struct.attrs {
-                        for segment in &attribute.meta.path().segments {
-                            if segment.ident == "maturity" {
-                                metrics.increment_maturity_structs_count();
-                            }
-                        }
-                    }
+                    metrics
+                        .items_mut(ItemKind::Struct)
+                        .increment(self.has_maturity(&item_struct.attrs));
                 }
                 syn::Item::Trait(item_trait) => {
-                    metrics.increment_traits_count();
-
-                    for attribute in item_trait.attrs {
-                        for segment in &attribute.meta.path().segments {
-                            if segment.ident == "maturity" {
-                                metrics.increment_maturity_traits_count();
-                            }
-                        }
-                    }
+                    metrics
+                        .items_mut(ItemKind::Trait)
+                        .increment(self.has_maturity(&item_trait.attrs));
                 }
-                // syn::Item::TraitAlias(item_trait_alias) => todo!(),
-                // syn::Item::Type(item_type) => todo!(),
-                // syn::Item::Union(item_union) => todo!(),
-                // syn::Item::Use(item_use) => todo!(),
-                // syn::Item::Verbatim(token_stream) => todo!(),
+                syn::Item::TraitAlias(item_trait_alias) => {
+                    metrics
+                        .items_mut(ItemKind::TraitAlias)
+                        .increment(self.has_maturity(&item_trait_alias.attrs));
+                }
+                syn::Item::Type(item_type) => {
+                    metrics
+                        .items_mut(ItemKind::Type)
+                        .increment(self.has_maturity(&item_type.attrs));
+                }
+                syn::Item::Union(item_union) => {
+                    metrics
+                        .items_mut(ItemKind::Union)
+                        .increment(self.has_maturity(&item_union.attrs));
+                }
+                syn::Item::Use(item_use) => {
+                    metrics
+                        .items_mut(ItemKind::Use)
+                        .increment(self.has_maturity(&item_use.attrs));
+                }
+                // TODO: Need to poke it more
+                // syn::Item::Verbatim(token_stream) => {
+                //     metrics
+                //         .items_mut(ItemKind::Verbatim)
+                //         .increment(self.has_maturity());
+                // }
                 _ => {}
             }
         }
@@ -126,5 +151,14 @@ impl Collector {
 impl Default for Collector {
     fn default() -> Self {
         Self::new()
+    }
+}
+
+// helper functions
+impl Collector {
+    #[maturity]
+    #[instrument(level = "trace", skip_all)]
+    fn has_maturity(&self, attrs: &[syn::Attribute]) -> bool {
+        attrs.iter().any(|attr| attr.path().is_ident("maturity"))
     }
 }
