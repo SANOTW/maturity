@@ -33,3 +33,9 @@ clap.workspace = true
 
 # parsing library for the stream of rust tokens
 syn.workspace = true
+
+# pretty tables for reporting
+comfy-table.workspace = true
+
+# terminal text styling and colours
+owo-colors.workspace = true
