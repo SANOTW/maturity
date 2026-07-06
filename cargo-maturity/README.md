@@ -23,7 +23,7 @@ cargo install cargo-maturity
 
 ## Screenshot
 
-![Maturity Report of the maturity workspace using the `cargo maturity` plugin](images/usage_of_cargo_maturity_command.png)
+<img src="https://codeberg.org/SANOTW/maturity/raw/commit/3f8ab49b1dbffd3021142d2d25856e4328305610/cargo-maturity/images/usage_of_cargo_maturity_command.png" alt="Maturity Report of the maturity workspace using the `cargo maturity` plugin" style="max-width:100%;">
 
 Maturity Report of the maturity workspace using the `cargo maturity` plugin
 
@@ -34,7 +34,7 @@ Maturity Report of the maturity workspace using the `cargo maturity` plugin
 > [!NOTE]
 > v0.1.2 - generates an inventory report for the current project or workspace
 
-![usage display of cargo maturity report command](images/cargo_maturity_report.png)
+<img src="https://codeberg.org/SANOTW/maturity/raw/commit/3f8ab49b1dbffd3021142d2d25856e4328305610/cargo-maturity/images/cargo_maturity_report.png" alt="usage display of cargo maturity report command" style="max-width:100%;">
 
 ## Learn More
 

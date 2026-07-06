@@ -31,7 +31,7 @@ cargo install maturity-cli
 
 ## Screenshot
 
-![Maturity Report of the maturity workspace using the `target/release/maturity` plugin](images/usage_of_release_maturity_command.png)
+<img src="https://codeberg.org/SANOTW/maturity/raw/commit/3f8ab49b1dbffd3021142d2d25856e4328305610/maturity-cli/images/usage_of_release_maturity_command.png" alt="Maturity Report of the maturity workspace using the `target/release/maturity` plugin" style="max-width:100%;">
 
 Maturity Report of the maturity workspace using the standalone `maturity` executable
 
@@ -42,7 +42,7 @@ Maturity Report of the maturity workspace using the standalone `maturity` execut
 > [!NOTE]
 >  v0.1.2 - generates an inventory report for the current project or workspace
 
-![usage display of release maturity report command](images/release_maturity_report.png)
+<img src="https://codeberg.org/SANOTW/maturity/raw/commit/3f8ab49b1dbffd3021142d2d25856e4328305610/maturity-cli/images/release_maturity_report.png" alt="usage display of release maturity report command" style="max-width:100%;">
 
 ## Learn More
 
