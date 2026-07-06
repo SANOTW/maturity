@@ -2,7 +2,8 @@
 
 Status: Experimental (Under Development)
 
-Version: 0.1.0
+Version: 0.1.2
+
 ---
 
 ## What is Maturity?
@@ -11,13 +12,14 @@ Version: 0.1.0
 > Current release focuses on inventory collection, visibility and scaffolding or foundation for further features and improvements.
 
 The annotation system is intended to be developer-driven; `maturity` reports information; it doesn't modify source code or make decisions on behalf of the developer.
+
 ---
 
-## Current Scope (0.1.0)
+## Current Scope (0.1.2)
 
-Version` 0.1.0` focuses on inventory reporting.
+Version `0.1.2` focuses on inventory reporting.
 
-Current release collects project metrics and discover `maturity` annotated items.
+Current release collects project metrics and discover `#[maturity]` annotated items.
 
 The following systems are not yet implemented:
 
@@ -26,46 +28,74 @@ The following systems are not yet implemented:
 - State tracking
 - Historical analysis
 - Report exporting
+  
 ---
 
 ## Current Capabilities
 
-### Project Inventory
+### Project Metrics
+
 - Project name
 - Total file count
 - Rust file count
-- Struct count, Enum, Trait, Function count
+
+### Rust Item Inventory
+
+  - Const
+  - Enum
+  - ExternCrate
+  - Function
+  - ForeignMod
+  - Implementation
+  - Macro
+  - Module
+  - Static
+  - Struct
+  - Trait
+  - TraitAlias
+  - Type
+  - Union
+  - Use
+
+> [!NOTE]
+> `syn::Item::Verbatim` support is planned but not yet implemented.
 
 ### Maturity Inventory
-- maturity annotated structs, enums, traits, functions
+
+The same item kinds are also tracked for `#[maturity]` annotations.
 
 ## Output Example
 ```terminal
-Maturity Package Version: 0.1.0
-Inventory counting: Implemented - partially
-Scoring: Not Implemented
-Analysis: Not Implemented
-----------------------------------
-Project: maturity
-Total Files Count: 57
-Rust Files Count: 17
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                            Maturity Report v0.1.2                            │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Inventory counting   Implemented (partial)
+Scoring              Not Implemented
+Analysis             Not Implemented
 
-Items
-------
+Project
+--------------------------------------------------------------------------------
+Name                 maturity
+File                 59
+Rust Files           17
 
-Structs Count: 6
-Enums Count: 2
-Traits Count: 0
-Functions Count: 6
-
-Maturity Items
-------
-
-Maturity Structs Count: 6
-Maturity Enums Count: 2
-Maturity Traits Count: 0
-Maturity Functions Count: 3
-```
+╭───────────────────────────┬───────────────────────┬──────────────────────────╮
+│ Item                      ┆ Total Count           ┆ Maturity Count           │
+╞═══════════════════════════╪═══════════════════════╪══════════════════════════╡
+│ Enums                     ┆                     3 ┆                        3 │
+├╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┤
+│ Functions                 ┆                     6 ┆                        3 │
+├╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┤
+│ Implementations           ┆                    15 ┆                        0 │
+├╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┤
+│ Modules                   ┆                    12 ┆                        0 │
+├╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┤
+│ Structs                   ┆                     8 ┆                        8 │
+├╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┤
+│ Types                     ┆                     1 ┆                        1 │
+├╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┤
+│ Uses                      ┆                    37 ┆                        0 │
+╰───────────────────────────┴───────────────────────┴──────────────────────────╯
 ---
 
 ## Installation
@@ -89,7 +119,21 @@ cargo install maturity-cli
 ```bash
 maturity
 ```
+
 ---
+
+## `maturity` ecosystem?
+
+The `maturity` ecosystem currently consists of 5 crates:
+
+### Core functionality
+- maturity-macro
+- maturity-core
+- maturity-report
+
+### Interfaces
+- cargo-maturity
+- maturity-cli
 
 ## Why does it exist?
 
@@ -100,7 +144,7 @@ and the best part `Which parts were considered stable, unstable, experimental or
 Yes, Rust already provides attributes such as `deprecated`, and there are crates dedicated to stability, testing, benchmarking, and many other aspects of software development.
 
 However, I often found and still find myself wanting a higher-level view. Not just individual annotations scattered throughout files no, no, no, no.
-The information may already exist, but it is scattered throughout the project. Documentation lives in one place, Tests live somewhere else and Benchmarks in another location. And the attributes are attached to individual items.
+The information may already exist, but it is scattered throughout the project. Documentation lives in one place, tests live somewhere else, and benchmarks in another location. And the attributes are attached to individual items.
 
 What I want is not another place to store information, but a way to gather and report that information as a whole.
 
@@ -146,9 +190,10 @@ But say one does venture into this dungeon to gain a bigger picture, well if the
 
 As for me? I shall use my crate for venturing on my behalf, and tell me what in the world this dungeon even is now. Let `maturity` venturing through the dungeon whether annotated with its attributes or not whether there attributes it will recognise and any other features and capabilities given to it, and have it report to me, "Here's the spoils of information." of what it found, all in one place. And hopefully in far less time that I would have spent doing it myself.
 
-The goal is not to replace documentation, testing, benchmarking, or existing Rust attributes-oh hell no. I do like those systems and I certainly do not wish to re-create them unless it is for learning or if I have time and want to make those for whatever reason. If anything this crate, just adds another layer to documentation and annotation. Essentially adding more attributes to the code, quite literally.
+The goal is not to replace documentation, testing, benchmarking, or existing Rust attributes-far from it. I do like those systems and I certainly do not wish to re-create them unless it is for learning or if I have time and want to make those for whatever reason. If anything this crate, just adds another layer to documentation and annotation. Essentially adding more attributes to the code, quite literally.
 
 The goal is to make the development state of a project visible, reportable, and easier to understand without first having to navigate through every nested file and module.
+
 ---
 
 ## Planned Annotation System
@@ -157,7 +202,7 @@ Future releases aim to support richer maturity annotations
 
 Example: (might change for a better variant)
 ```rust
-#maturity(
+#[maturity(
   state = "stable",
   verified,
   documented
@@ -166,26 +211,44 @@ pub fn foo() {}
 ```
 
 The long-term goal is to allow developers to describe the state of a system directly within the source code and generate maturity reports from those annotations.
+
 ---
 
 ## Roadmap
 
 See: [Roadmap](ROADMAP.md)
+
 ---
   
 ## Documentation
 
 Additional information can be found in:
+
 - [docs/](docs/)
 - [Changelog](CHANGELOG.md)
+
 ---
 
 ## Security
 See: [Security](SECURITY.md)
+
 ---
 
 ## Contributing
 See: [Contributing](CONTRIBUTING.md)
+
+---
+
+## Repository
+
+Primary repository: [Codeberg](https://codeberg.org/SANOTW/maturity.git)
+
+Mirror repository: [GitHub](https://github.com/SANOTW/maturity)
+
+## MSRV
+
+Minimum Supported Rust Version: 1.94.1
+
 ---
 
 ## License
@@ -195,4 +258,5 @@ Copyright 2026 SANOTW
 Licensed under the Apache License, Version 2.0.
 
 See the LICENSE file for details.
+
 ---

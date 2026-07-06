@@ -2,7 +2,7 @@
 
 This crate contains the core implementation behind the `maturity` tooling.
 
-Its responsibilities lies in:
+Its responsibilities include:
 
 - project scanning
 - file discovery
@@ -11,15 +11,40 @@ Its responsibilities lies in:
 - report generation
 - command execution
 
-## `maturity` ecosystem?
+## Installation
 
-The `maturity` ecosystem is of 5 crates where 2 crates are interfaces and 3 crates are functionalities:
+```shell
+cargo add maturity-report
+```
 
-### functionality crates:
-- maturity-core
-- maturity-macro
-- maturity-report
+## Structure
 
-### interface crates:
-- cargo-maturity
-- maturity-cli
+```text
+maturity-report
+└── src
+    ├── cli
+    │   └── commands
+    ├── collector
+    ├── reporter
+    ├── scanner
+    └── utilities
+        └── logger
+```
+
+## Learn More
+
+See the workspace README for an overview of the maturity ecosystem.
+
+## Repository
+
+Primary repository: [Codeberg](https://codeberg.org/SANOTW/maturity.git)
+
+Mirror repository: [GitHub](https://github.com/SANOTW/maturity)
+
+## MSRV
+
+Minimum Supported Rust Version: 1.94.1
+
+## License
+
+Licensed under Apache-2.0. See the workspace LICENSE file for details.
