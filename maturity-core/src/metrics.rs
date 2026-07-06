@@ -175,7 +175,7 @@ impl fmt::Display for ItemKind {
 /// assert_eq!(metric.items(ItemKind::Function).unwrap().maturity(), 1);
 /// ```
 #[maturity]
-#[derive(Debug, Clone)]
+#[derive(Default, Debug, Clone)]
 pub struct MetricCount {
     project_name: String,
 
@@ -204,16 +204,6 @@ impl MetricCount {
     #[instrument(level = "trace", skip_all)]
     pub fn items_iter(&self) -> impl Iterator<Item = (&ItemKind, &ItemMetric)> {
         self.items.iter()
-    }
-}
-
-impl Default for MetricCount {
-    fn default() -> Self {
-        Self {
-            project_name: String::new(),
-            file: FileMetric::default(),
-            items: BTreeMap::new(),
-        }
     }
 }
 
