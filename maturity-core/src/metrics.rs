@@ -19,7 +19,7 @@ use tracing::instrument;
 /// assert_eq!(metrics.total(), 2);
 /// assert_eq!(metrics.rust(), 1);
 /// ```
-#[maturity]
+#[maturity(experimental)]
 #[derive(Debug, Default, Clone)]
 pub struct FileMetric {
     /// Total count of general files
@@ -29,7 +29,6 @@ pub struct FileMetric {
 }
 
 impl FileMetric {
-    #[maturity]
     #[instrument(level = "trace", skip_all)]
     pub fn increment(&mut self, is_rust_file: bool) {
         self.total += 1;
@@ -39,13 +38,11 @@ impl FileMetric {
         }
     }
 
-    #[maturity]
     #[instrument(level = "trace", skip_all)]
     pub fn total(&self) -> u64 {
         self.total
     }
 
-    #[maturity]
     #[instrument(level = "trace", skip_all)]
     pub fn rust(&self) -> u64 {
         self.rust
@@ -69,7 +66,7 @@ impl FileMetric {
 /// assert_eq!(metrics.total(), 2);
 /// assert_eq!(metrics.maturity(), 1);
 /// ```
-#[maturity]
+#[maturity(experimental)]
 #[derive(Debug, Default, Clone)]
 pub struct ItemMetric {
     /// Total count of the item
@@ -78,8 +75,10 @@ pub struct ItemMetric {
     maturity: u64,
 }
 
+// -------------------
+// Getters and setters
+// -------------------
 impl ItemMetric {
-    #[maturity]
     #[instrument(level = "trace", skip_all)]
     pub fn increment(&mut self, has_maturity: bool) {
         self.total += 1;
@@ -89,13 +88,11 @@ impl ItemMetric {
         }
     }
 
-    #[maturity]
     #[instrument(level = "trace", skip_all)]
     pub fn total(&self) -> u64 {
         self.total
     }
 
-    #[maturity]
     #[instrument(level = "trace", skip_all)]
     pub fn maturity(&self) -> u64 {
         self.maturity
@@ -105,7 +102,7 @@ impl ItemMetric {
 // ----------------------------------------------
 
 /// ItemKinds matching the `syn` crate's `Item` enum as close as possible
-#[maturity]
+#[maturity(experimental)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum ItemKind {
     Const,
@@ -174,7 +171,7 @@ impl fmt::Display for ItemKind {
 /// assert_eq!(metric.file().rust(), 1);
 /// assert_eq!(metric.items(ItemKind::Function).unwrap().maturity(), 1);
 /// ```
-#[maturity]
+#[maturity(experimental)]
 #[derive(Default, Debug, Clone)]
 pub struct MetricCount {
     project_name: String,
@@ -186,11 +183,13 @@ pub struct MetricCount {
     /// A `BTreeMap` is used instead of a `HashMap` to guarantee deterministic ordering during iteration and report
     /// generation.
     items: BTreeMap<ItemKind, ItemMetric>,
+    foreign_items: BTreeMap<ItemKind, ItemMetric>,
+    impl_items: BTreeMap<ItemKind, ItemMetric>,
+    trait_items: BTreeMap<ItemKind, ItemMetric>,
 }
 
 impl MetricCount {
     /// Creates an empty metric collection.
-    #[maturity]
     #[instrument(level = "trace", name = "Metrics/new", skip_all)]
     pub fn new() -> Self {
         Self::default()
@@ -200,16 +199,34 @@ impl MetricCount {
     ///
     /// Iteration order is deterministic and follows the ordering defined by the `ItemKind`, as the internal storage uses a
     /// `BTreeMap`
-    #[maturity]
     #[instrument(level = "trace", skip_all)]
     pub fn items_iter(&self) -> impl Iterator<Item = (&ItemKind, &ItemMetric)> {
         self.items.iter()
+    }
+
+    #[instrument(level = "trace", skip_all)]
+    pub fn foreign_items_iter(&self) -> impl Iterator<Item = (&ItemKind, &ItemMetric)> {
+        self.foreign_items.iter()
+    }
+
+    #[instrument(level = "trace", skip_all)]
+    pub fn impl_items_iter(&self) -> impl Iterator<Item = (&ItemKind, &ItemMetric)> {
+        self.impl_items.iter()
+    }
+
+    #[instrument(level = "trace", skip_all)]
+    pub fn trait_items_iter(&self) -> impl Iterator<Item = (&ItemKind, &ItemMetric)> {
+        self.trait_items.iter()
     }
 }
 
 /// Getters and Setters
 ///
 /// Used to maintain a stable interface between crates.
+#[maturity(
+    experimental,
+    todo = "Need to check if it can be refactored in better form"
+)]
 impl MetricCount {
     #[instrument(level = "trace", skip_all)]
     pub fn project_name(&self) -> &str {
@@ -221,6 +238,8 @@ impl MetricCount {
         self.project_name = name
     }
 
+    // ---
+
     #[instrument(level = "trace", skip_all)]
     pub fn file(&self) -> &FileMetric {
         &self.file
@@ -231,6 +250,8 @@ impl MetricCount {
         &mut self.file
     }
 
+    // ---
+
     #[instrument(level = "trace", skip_all)]
     pub fn items(&self, kind: ItemKind) -> Option<&ItemMetric> {
         self.items.get(&kind)
@@ -239,5 +260,41 @@ impl MetricCount {
     #[instrument(level = "trace", skip_all)]
     pub fn items_mut(&mut self, kind: ItemKind) -> &mut ItemMetric {
         self.items.entry(kind).or_default()
+    }
+
+    // ---
+
+    #[instrument(level = "trace", skip_all)]
+    pub fn foreign_items(&self, kind: ItemKind) -> Option<&ItemMetric> {
+        self.foreign_items.get(&kind)
+    }
+
+    #[instrument(level = "trace", skip_all)]
+    pub fn foreign_items_mut(&mut self, kind: ItemKind) -> &mut ItemMetric {
+        self.foreign_items.entry(kind).or_default()
+    }
+
+    // ---
+
+    #[instrument(level = "trace", skip_all)]
+    pub fn impl_items(&self, kind: ItemKind) -> Option<&ItemMetric> {
+        self.impl_items.get(&kind)
+    }
+
+    #[instrument(level = "trace", skip_all)]
+    pub fn impl_items_mut(&mut self, kind: ItemKind) -> &mut ItemMetric {
+        self.impl_items.entry(kind).or_default()
+    }
+
+    // ---
+
+    #[instrument(level = "trace", skip_all)]
+    pub fn trait_items(&self, kind: ItemKind) -> Option<&ItemMetric> {
+        self.trait_items.get(&kind)
+    }
+
+    #[instrument(level = "trace", skip_all)]
+    pub fn trait_items_mut(&mut self, kind: ItemKind) -> &mut ItemMetric {
+        self.trait_items.entry(kind).or_default()
     }
 }
