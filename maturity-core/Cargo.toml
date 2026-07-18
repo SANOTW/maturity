@@ -16,4 +16,9 @@ maturity-macro.workspace = true
 
 # logging
 tracing.workspace = true
-tracing-subscriber.workspace = true
+
+# rust syntax parsing
+syn.workspace = true
+
+# rust syntax tree data structure into tokens of source code
+quote.workspace = true

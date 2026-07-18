@@ -4,6 +4,7 @@ use std::collections::BTreeMap;
 use maturity_macro::maturity;
 use tracing::instrument;
 
+// TODO: Should this file be modularised... is it possible to refactor this file further... without destroying meaning
 /// Metrics tracking files related values.
 ///
 /// ## Usage
@@ -123,27 +124,43 @@ pub enum ItemKind {
     Verbatim,
 }
 
+impl Default for ItemKind {
+    fn default() -> Self {
+        Self::Verbatim
+    }
+}
+
 impl fmt::Display for ItemKind {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            ItemKind::Const => write!(f, "Consts"),
-            ItemKind::Enum => write!(f, "Enums"),
-            ItemKind::ExternCrate => write!(f, "External Crates"),
-            ItemKind::Function => write!(f, "Functions"),
-            ItemKind::ForeignMod => write!(f, "Foreign Modules"),
-            ItemKind::Implementation => write!(f, "Implementations"),
-            ItemKind::Macro => write!(f, "Macros"),
-            ItemKind::Module => write!(f, "Modules"),
-            ItemKind::Static => write!(f, "Statics"),
-            ItemKind::Struct => write!(f, "Structs"),
-            ItemKind::Trait => write!(f, "Traits"),
-            ItemKind::TraitAlias => write!(f, "Trait Aliases"),
-            ItemKind::Type => write!(f, "Types"),
-            ItemKind::Union => write!(f, "Unions"),
-            ItemKind::Use => write!(f, "Uses"),
+            ItemKind::Const => write!(f, "Const"),
+            ItemKind::Enum => write!(f, "Enum"),
+            ItemKind::ExternCrate => write!(f, "External Crate"),
+            ItemKind::Function => write!(f, "Function"),
+            ItemKind::ForeignMod => write!(f, "Foreign Module"),
+            ItemKind::Implementation => write!(f, "Implementation"),
+            ItemKind::Macro => write!(f, "Macro"),
+            ItemKind::Module => write!(f, "Module"),
+            ItemKind::Static => write!(f, "Static"),
+            ItemKind::Struct => write!(f, "Struct"),
+            ItemKind::Trait => write!(f, "Trait"),
+            ItemKind::TraitAlias => write!(f, "Trait Aliase"),
+            ItemKind::Type => write!(f, "Type"),
+            ItemKind::Union => write!(f, "Union"),
+            ItemKind::Use => write!(f, "Use"),
             ItemKind::Verbatim => write!(f, "Verbatim"),
         }
     }
+}
+
+// ----------------------------------------------
+
+#[maturity(experimental)]
+pub enum MetricGroup {
+    Item,
+    ForeignItem,
+    Implementation,
+    Trait,
 }
 
 // ----------------------------------------------
@@ -218,6 +235,68 @@ impl MetricCount {
     pub fn trait_items_iter(&self) -> impl Iterator<Item = (&ItemKind, &ItemMetric)> {
         self.trait_items.iter()
     }
+
+    // ---
+
+    // mutable
+    #[maturity(experimental)]
+    #[instrument(level = "trace", skip_all)]
+    pub fn metric_mut(&mut self, group: MetricGroup, kind: ItemKind) -> &mut ItemMetric {
+        match group {
+            MetricGroup::Item => self.items.entry(kind).or_default(),
+            MetricGroup::ForeignItem => self.foreign_items.entry(kind).or_default(),
+            MetricGroup::Implementation => self.impl_items.entry(kind).or_default(),
+            MetricGroup::Trait => self.trait_items.entry(kind).or_default(),
+        }
+    }
+
+    #[maturity(experimental)]
+    #[instrument(level = "trace", skip_all)]
+    pub fn items_maturity_total(&self) -> u64 {
+        self.maturity_total(self.collect_metrics(self.items_iter().collect()))
+    }
+
+    #[maturity(experimental)]
+    #[instrument(level = "trace", skip_all)]
+    pub fn foreign_items_maturity_total(&self) -> u64 {
+        self.maturity_total(self.collect_metrics(self.foreign_items_iter().collect()))
+    }
+
+    #[maturity(experimental)]
+    #[instrument(level = "trace", skip_all)]
+    pub fn impl_items_maturity_total(&self) -> u64 {
+        self.maturity_total(self.collect_metrics(self.impl_items_iter().collect()))
+    }
+
+    #[maturity(experimental)]
+    #[instrument(level = "trace", skip_all)]
+    pub fn trait_items_maturity_total(&self) -> u64 {
+        self.maturity_total(self.collect_metrics(self.trait_items_iter().collect()))
+    }
+
+    #[maturity(experimental, unused)]
+    #[instrument(level = "trace", skip_all)]
+    pub fn grand_maturity_total(&self) -> u64 {
+        self.items_maturity_total()
+            + self.foreign_items_maturity_total()
+            + self.impl_items_maturity_total()
+            + self.trait_items_maturity_total()
+    }
+}
+
+#[maturity(todo = "Check if this can be removed.")]
+impl MetricCount {
+    #[instrument(level = "trace", skip_all)]
+    fn collect_metrics(&self, iter: Vec<(&ItemKind, &ItemMetric)>) -> Vec<(ItemKind, ItemMetric)> {
+        iter.into_iter()
+            .map(|(kind, metric)| (*kind, metric.clone()))
+            .collect()
+    }
+
+    #[instrument(level = "trace", skip_all)]
+    fn maturity_total(&self, iter: Vec<(ItemKind, ItemMetric)>) -> u64 {
+        iter.iter().map(|(_, metric)| metric.maturity).sum()
+    }
 }
 
 /// Getters and Setters
@@ -257,21 +336,11 @@ impl MetricCount {
         self.items.get(&kind)
     }
 
-    #[instrument(level = "trace", skip_all)]
-    pub fn items_mut(&mut self, kind: ItemKind) -> &mut ItemMetric {
-        self.items.entry(kind).or_default()
-    }
-
     // ---
 
     #[instrument(level = "trace", skip_all)]
     pub fn foreign_items(&self, kind: ItemKind) -> Option<&ItemMetric> {
         self.foreign_items.get(&kind)
-    }
-
-    #[instrument(level = "trace", skip_all)]
-    pub fn foreign_items_mut(&mut self, kind: ItemKind) -> &mut ItemMetric {
-        self.foreign_items.entry(kind).or_default()
     }
 
     // ---
@@ -281,20 +350,10 @@ impl MetricCount {
         self.impl_items.get(&kind)
     }
 
-    #[instrument(level = "trace", skip_all)]
-    pub fn impl_items_mut(&mut self, kind: ItemKind) -> &mut ItemMetric {
-        self.impl_items.entry(kind).or_default()
-    }
-
     // ---
 
     #[instrument(level = "trace", skip_all)]
     pub fn trait_items(&self, kind: ItemKind) -> Option<&ItemMetric> {
         self.trait_items.get(&kind)
-    }
-
-    #[instrument(level = "trace", skip_all)]
-    pub fn trait_items_mut(&mut self, kind: ItemKind) -> &mut ItemMetric {
-        self.trait_items.entry(kind).or_default()
     }
 }
