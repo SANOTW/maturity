@@ -7,34 +7,34 @@
 //!
 
 use comfy_table::{
-    Attribute, Cell, CellAlignment, Color, ContentArrangement, Table,
+    Attribute, Cell, CellAlignment, Color, ContentArrangement, Row, Table,
     modifiers::UTF8_ROUND_CORNERS, presets::UTF8_FULL,
 };
-use maturity_core::metrics::MetricCount;
+use maturity_core::metrics::{ItemKind, ItemMetric, MetricCount};
 use maturity_macro::maturity;
 use owo_colors::OwoColorize;
 use tracing::instrument;
 
-/// Displays collected project metrics.
+pub mod annotation;
+pub mod inventory;
+pub mod report;
+
+// TODO: Transfer it into the Inventory struct as field
+// To ensure the entire report uses a consistent width
+pub const FULL_WIDTH: u16 = 80;
+pub const LABEL_WIDTH: usize = 21;
+
 #[maturity]
 pub struct Reporter;
 
 impl Reporter {
-    #[maturity]
     #[instrument(level = "trace", name = "Reporter/new", skip_all)]
     pub fn new() -> Self {
-        Self {}
+        Self
     }
 
-    /// Prints collected metrics to the terminal.
-    #[maturity]
     #[instrument(level = "trace", skip_all)]
-    pub fn display(&self, metrics: &MetricCount) {
-        // TODO: Transfer it into the Reporter struct as field
-        // To ensure the entire report uses a consistent width
-        const FULL_WIDTH: u16 = 80;
-        const LABEL_WIDTH: usize = 20;
-
+    pub fn display_header(&self) {
         // Header
         let mut header = Table::new();
 
@@ -53,30 +53,40 @@ impl Reporter {
             .set_content_arrangement(ContentArrangement::DynamicFullWidth);
 
         println!("{header}");
+    }
 
+    #[instrument(level = "trace", skip_all)]
+    pub fn display_capabilities(&self) {
         // Version
         println!(
             "{:<LABEL_WIDTH$} {}",
-            "Inventory counting".bold().cyan(),
-            "Implemented (partial)".yellow()
+            "Inventory Collection".bold().cyan(),
+            "Implemented".green()
+        );
+
+        println!(
+            "{:<LABEL_WIDTH$} {}",
+            "Annotation Collection".bold().cyan(),
+            "In Progress".yellow()
         );
 
         println!(
             "{:<LABEL_WIDTH$} {}",
             "Scoring".bold().cyan(),
-            "Not Implemented".red()
+            "Planned".red()
         );
+
         println!(
             "{:<LABEL_WIDTH$} {}",
             "Analysis".bold().cyan(),
-            "Not Implemented".red()
+            "Planned".red()
         );
         println!();
+    }
 
-        // Project info
-
-        println!("{}", "Project".bold().cyan());
-        println!("{}", "-".repeat(FULL_WIDTH as usize));
+    #[instrument(level = "trace", skip_all)]
+    pub fn display_project_info(&self, metrics: &MetricCount) {
+        self.label("Project");
 
         println!("{:<LABEL_WIDTH$} {}", "Name".bold(), metrics.project_name());
 
@@ -90,9 +100,19 @@ impl Reporter {
             "Rust Files".bold(),
             &metrics.file().rust()
         );
-        println!();
+    }
+}
 
-        // Report
+impl Reporter {
+    #[maturity(experimental, todo = "turn label into String? need to think over it")]
+    fn label(&self, label: &str) {
+        println!("{}", label.bold().cyan());
+        println!("{}", "-".repeat(FULL_WIDTH as usize));
+    }
+
+    #[maturity(experimental)]
+    fn report_table(&self, label: &str, headers: &Vec<&str>, report_type: ReportType) -> Table {
+        self.label(label);
 
         let mut items = Table::new();
 
@@ -102,32 +122,38 @@ impl Reporter {
             .set_content_arrangement(comfy_table::ContentArrangement::DynamicFullWidth)
             .set_width(FULL_WIDTH);
 
-        items.set_header([
-            Cell::new("Item")
-                .fg(Color::Cyan)
-                .add_attribute(Attribute::Bold),
-            Cell::new("Total Count")
-                .fg(Color::Cyan)
-                .add_attribute(Attribute::Bold),
-            Cell::new("Maturity Count")
-                .fg(Color::Cyan)
-                .add_attribute(Attribute::Bold),
-        ]);
+        let mut header_row = Row::new();
 
-        for (kind, metric) in metrics.items_iter() {
-            items.add_row([
-                Cell::new(kind.to_string()),
-                Cell::new(metric.total().to_string()).set_alignment(CellAlignment::Right),
-                Cell::new(metric.maturity().to_string()).set_alignment(CellAlignment::Right),
-            ]);
+        for header in headers {
+            header_row.add_cell(
+                Cell::new(header)
+                    .fg(Color::Cyan)
+                    .add_attribute(Attribute::Bold),
+            );
         }
 
-        println!("{items}");
+        items.set_header(header_row);
+
+        // ---
+
+        match report_type {
+            ReportType::Inventory(inventory_items) => {
+                for (kind, metric) in inventory_items {
+                    items.add_row([
+                        Cell::new(kind.to_string()),
+                        Cell::new(metric.total().to_string()).set_alignment(CellAlignment::Right),
+                        Cell::new(metric.maturity().to_string())
+                            .set_alignment(CellAlignment::Right),
+                    ]);
+                }
+            }
+        }
+
+        items
     }
 }
 
-impl Default for Reporter {
-    fn default() -> Self {
-        Self::new()
-    }
+#[maturity(experimental, todo = "move this enum block to proper location")]
+pub enum ReportType {
+    Inventory(Vec<(ItemKind, ItemMetric)>),
 }

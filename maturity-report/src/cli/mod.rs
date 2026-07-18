@@ -8,9 +8,8 @@ use maturity_macro::maturity;
 
 mod commands;
 
-use crate::{
-    cli::commands::{Commands, report::Report},
-    // utilities::logger::log::initialise_logging,
+use crate::cli::commands::{
+    Commands, annotations::Annotations, inventory::Inventory, report::Report,
 };
 
 #[maturity]
@@ -32,6 +31,12 @@ pub fn run(args: Vec<String>) {
     match &cli.command.unwrap_or(Commands::Report) {
         Commands::Report => {
             Report::new().run();
+        }
+        Commands::Inventory => {
+            Inventory::new().run();
+        }
+        Commands::Annotations => {
+            Annotations::new().run();
         }
     }
 }
