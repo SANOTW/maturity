@@ -63,9 +63,7 @@ impl Annotation {
 impl Annotation {
     #[instrument(level = "trace", skip_all)]
     fn collect_metrics(&self, iter: Vec<&AnnotatedItemInfo>) -> Vec<AnnotatedItemInfo> {
-        iter.into_iter()
-            .map(|item_info| item_info.clone())
-            .collect()
+        iter.into_iter().cloned().collect()
     }
 
     #[maturity(experimental, refactor = "some")]

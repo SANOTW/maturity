@@ -104,7 +104,7 @@ impl ItemMetric {
 
 /// ItemKinds matching the `syn` crate's `Item` enum as close as possible
 #[maturity(experimental)]
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Default, Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum ItemKind {
     Const,
     Enum,
@@ -121,13 +121,8 @@ pub enum ItemKind {
     Type,
     Union,
     Use,
+    #[default]
     Verbatim,
-}
-
-impl Default for ItemKind {
-    fn default() -> Self {
-        Self::Verbatim
-    }
 }
 
 impl fmt::Display for ItemKind {

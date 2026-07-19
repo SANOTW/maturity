@@ -348,7 +348,10 @@ impl Collector {
         }
     }
 
-    #[maturity(experimental)]
+    #[maturity(
+        experimental,
+        refactor = "reduce number of arguments or re look entire data flow and refactor"
+    )]
     #[instrument(level = "trace", skip_all)]
     fn process_annotation(
         &self,
@@ -367,11 +370,10 @@ impl Collector {
             .metric_mut(group, kind)
             .increment(annotation.exists());
 
-        if let Some(attributes) = annotation.attributes() {
-            if let Some(inventory) = inventory.as_deref_mut() {
-                inventory
-                    .store_annotation(AnnotatedItemInfo::new(path, item_name, kind, attributes));
-            }
+        if let Some(attributes) = annotation.attributes()
+            && let Some(inventory) = inventory.as_deref_mut()
+        {
+            inventory.store_annotation(AnnotatedItemInfo::new(path, item_name, kind, attributes));
         }
 
         match nested_type {

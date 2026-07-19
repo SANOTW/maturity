@@ -153,6 +153,14 @@ impl Reporter {
     }
 }
 
+impl Default for Reporter {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+// ----------------------------------------------
+
 #[maturity(experimental, todo = "move this enum block to proper location")]
 pub enum ReportType {
     Inventory(Vec<(ItemKind, ItemMetric)>),

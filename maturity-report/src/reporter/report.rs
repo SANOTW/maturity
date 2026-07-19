@@ -20,3 +20,9 @@ impl Report {
         Inventory::new().display(metrics);
     }
 }
+
+impl Default for Report {
+    fn default() -> Self {
+        Self::new()
+    }
+}

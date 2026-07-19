@@ -1,4 +1,8 @@
-use std::{collections::HashMap, fmt, path::PathBuf};
+use std::{
+    collections::HashMap,
+    fmt,
+    path::{Path, PathBuf},
+};
 
 use maturity_macro::maturity;
 use tracing::instrument;
@@ -44,7 +48,7 @@ pub struct AnnotatedItemInfo {
 impl AnnotatedItemInfo {
     #[instrument(level = "trace", skip_all)]
     pub fn new(
-        path: &PathBuf,
+        path: &Path,
         name: Option<String>,
         kind: ItemKind,
         attributes: &MaturityAttributes,
