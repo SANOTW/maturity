@@ -40,7 +40,7 @@ Maturity Report of the maturity workspace using the standalone `maturity` execut
 ### `report`
 
 > [!NOTE]
->  v0.1.2 - generates an inventory report for the current project or workspace
+> v0.1.2 - generates an inventory report for the current project or workspace
 
 <img src="https://codeberg.org/SANOTW/maturity/raw/commit/3f8ab49b1dbffd3021142d2d25856e4328305610/maturity-cli/images/release_maturity_report.png" alt="usage display of release maturity report command" style="max-width:100%;">
 
