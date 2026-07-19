@@ -6,19 +6,19 @@ use tracing::instrument;
 pub enum MaturityAnnotation {
     Missing,
     Parsed(MaturityAttributes),
-    Invalid(syn::Error),
+    // Invalid(syn::Error),
 }
 
 impl MaturityAnnotation {
     #[instrument(level = "trace", skip_all)]
     pub fn exists(&self) -> bool {
-        matches!(self, Self::Parsed(_) | Self::Invalid(_))
+        matches!(self, Self::Parsed(_) /*| Self::Invalid(_)*/)
     }
 
-    #[instrument(level = "trace", skip_all)]
-    pub fn is_valid(&self) -> bool {
-        matches!(self, Self::Parsed(_))
-    }
+    // #[instrument(level = "trace", skip_all)]
+    // pub fn is_valid(&self) -> bool {
+    //     matches!(self, Self::Parsed(_))
+    // }
 
     #[instrument(level = "trace", skip_all)]
     pub fn attributes(&self) -> Option<&MaturityAttributes> {
@@ -28,14 +28,14 @@ impl MaturityAnnotation {
         }
     }
 
-    #[instrument(level = "trace", skip_all)]
-    pub fn error(&self) -> Option<&syn::Error> {
-        match self {
-            Self::Invalid(error) => {
-                println!("{error}");
-                Some(error)
-            }
-            _ => None,
-        }
-    }
+    // #[instrument(level = "trace", skip_all)]
+    // pub fn error(&self) -> Option<&syn::Error> {
+    //     match self {
+    //         Self::Invalid(error) => {
+    //             println!("{error}");
+    //             Some(error)
+    //         }
+    //         _ => None,
+    //     }
+    // }
 }

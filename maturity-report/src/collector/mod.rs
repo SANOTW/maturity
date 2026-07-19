@@ -130,7 +130,8 @@ impl Collector {
         };
         match attr.parse_args::<MaturityAttributes>() {
             Ok(meta) => MaturityAnnotation::Parsed(meta),
-            Err(error) => MaturityAnnotation::Invalid(error),
+            // TODO: Reinstate the Invalid field and have it properly used
+            Err(_) => MaturityAnnotation::Missing, /*MaturityAnnotation::Invalid(error),*/
         }
     }
 
