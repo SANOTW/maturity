@@ -174,11 +174,12 @@ pub enum MetricGroup {
 /// ```rust
 /// use maturity_core::metrics::MetricCount;
 /// use maturity_core::metrics::ItemKind;
+/// use maturity_core::metrics::MetricGroup;
 ///
 /// let mut metric = MetricCount::new();
 ///
 /// metric.file_mut().increment(true);
-/// metric.items_mut(ItemKind::Function).increment(true);
+/// metric.metric_mut(MetricGroup::Item, ItemKind::Function).increment(true);
 ///
 /// assert_eq!(metric.file().rust(), 1);
 /// assert_eq!(metric.items(ItemKind::Function).unwrap().maturity(), 1);
