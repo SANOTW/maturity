@@ -1,9 +1,34 @@
+<!-- markdownlint-disable MD024 -->
 # Changelog
 
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/2.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## \[0.2.0\] - 2026-07-20
+
+### Added
+
+- Inventory command for displaying project inventories
+- Annotation command for displaying collected maturity annotations
+- Annotation collection and reporting
+- Support for unknown attributes
+- Add Inventory and Annotations commands
+- Foreign, implementation and trait item inventories
+
+### Changed
+
+- Refactored metric storage around grouped metrics
+- `ItemKind` display names are now singular
+- Simplified metric iteration APIs
+
+### Documentation
+
+- Fixed markdownlint in `CONTRIBUTING.md` and `README.md`
+- Updated `ROADMAP.md`
+- Updated workspace and crate `README.md`s
+- Updated doc-tests
 
 ## \[0.1.3\] - 2026-07-06
 
@@ -25,7 +50,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `total` - returns the field value
   - `maturity` - returns the field value
   
-- Introduced `ItemKind` 
+- Introduced `ItemKind`
   - `fmt::Display` implementation
 
 - `MetricCount`
@@ -68,16 +93,16 @@ Inventory system
 
 - This `CHANGELOG` file.
 - Cargo plugin (`cargo maturity`)
-- Standalone CLI executable
+- Stand-alone CLI executable
 - Metrics reporting system
 - Detection and counting of `#[maturity]` annotation on supported items.
 - Inventory counting for:
   - Total files
   - Rust files
   - Structs
-  - Enums 
+  - Enums
   - Traits
-  - Functions 
+  - Functions
 - Initial maturity annotation detection
 - Recursive project scanning using the `ignore` crate
 - Rust syntax tree parsing using `syn`
@@ -90,7 +115,7 @@ Inventory system
   - maturity-macro
   - maturity-report
 
-## \[0.0.1\] 
+## \[0.0.1\]
 
 Changelog was not maintained for this release.
 Some of the changes from here are integrated into 0.1.0 release.
