@@ -1,3 +1,4 @@
+<!-- markdownlint-disable MD033 -->
 # cargo-maturity
 
 Cargo plugin integration for the `maturity` ecosystem.
@@ -5,15 +6,14 @@ Provides the `cargo maturity` command which allows the usage of the common CLI i
 
 ## Current
 
-Version `0.1.2` focuses on inventory reporting.
-It currently reports:
+Version `0.2.0` annotation infrastructure.
+It currently provides:
 
 - project file counts
 - Rust file counts
 - Rust item counts
 - `#[maturity]` - annotated item counts
-
-The only available command is `report`, which is also the default when no command or subcommand is provided.
+- Annotation attribute reporting
 
 ## Installation
 
@@ -23,18 +23,34 @@ cargo install cargo-maturity
 
 ## Screenshot
 
-<img src="https://codeberg.org/SANOTW/maturity/raw/commit/3f8ab49b1dbffd3021142d2d25856e4328305610/cargo-maturity/images/usage_of_cargo_maturity_command.png" alt="Maturity Report of the maturity workspace using the `cargo maturity` plugin" style="max-width:100%;">
+<img src="https://codeberg.org/SANOTW/maturity/raw/commit/1014eefbcaff92b1955b9a2067c27ba161b724ce/cargo-maturity/images/cargo_maturity_inventory.png" alt="Maturity Report of the maturity workspace using the `cargo maturity` plugin" style="max-width:100%;">
 
-Maturity Report of the maturity workspace using the `cargo maturity` plugin
+Maturity Report of the maturity workspace using the  `cargo maturity` plugin
 
 ## Commands
 
 ### `report`
 
 > [!NOTE]
-> v0.1.2 - generates an inventory report for the current project or workspace
+> Currently displays the same terminal as the `inventory` command.
 
-<img src="https://codeberg.org/SANOTW/maturity/raw/commit/3f8ab49b1dbffd3021142d2d25856e4328305610/cargo-maturity/images/cargo_maturity_report.png" alt="usage display of cargo maturity report command" style="max-width:100%;">
+---
+
+### `inventory`
+
+Displays the discovered Rust inventory for the current project.
+
+<img src="https://codeberg.org/SANOTW/maturity/raw/commit/1014eefbcaff92b1955b9a2067c27ba161b724ce/cargo-maturity/images/cargo_maturity_inventory.png" alt="usage display of cargo maturity inventory command" style="max-width:100%;">
+
+---
+
+### `annotations`
+
+Displays every discovered `#[maturity]` annotation together with its parsed attributes
+
+<img src="https://codeberg.org/SANOTW/maturity/raw/commit/1014eefbcaff92b1955b9a2067c27ba161b724ce/cargo-maturity/images/cargo_maturity_annotations.png" alt="usage display of cargo maturity annotations command" style="max-width:100%;">
+
+---
 
 ## Learn More
 

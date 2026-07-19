@@ -1,13 +1,16 @@
 # maturity-report
 
-This crate contains the core implementation behind the `maturity` tooling.
+This crate contains the reporting pipeline used by the `maturity` tooling.
+
+It coordinates project scanning, inventory collection, annotation processing, and terminal reporting.I
 
 Its responsibilities include:
 
 - project scanning
 - file discovery
 - rust syntax parsing
-- metric collection
+- inventory collection
+- maturity annotation processing
 - report generation
 - command execution
 

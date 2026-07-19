@@ -1,8 +1,9 @@
+<!-- markdownlint-disable MD024 -->
 # Maturity
 
 Status: Experimental (Under Development)
 
-Version: 0.1.2
+Version: 0.2.0
 
 ---
 
@@ -15,17 +16,18 @@ The annotation system is intended to be developer-driven; `maturity` reports inf
 
 ---
 
-## Current Scope (0.1.2)
+## Current Scope (0.2.0)
 
-Version `0.1.2` focuses on inventory reporting.
+Version `0.2.0` focuses on annotation reporting.
 
-Current release collects project metrics and discover `#[maturity]` annotated items.
+Current release extends inventory system with support for parsing, collecting, storing, and reporting `#[maturity]`annotations alongside project metrics.
 
 The following systems are not yet implemented:
 
 - Maturity scoring
-- Verification systems
-- State tracking
+- Verification attributes
+- Additional annotation categories
+- Workspace analysis
 - Historical analysis
 - Report exporting
   
@@ -41,81 +43,117 @@ The following systems are not yet implemented:
 
 ### Rust Item Inventory
 
-  - Const
-  - Enum
-  - ExternCrate
-  - Function
-  - ForeignMod
-  - Implementation
-  - Macro
-  - Module
-  - Static
-  - Struct
-  - Trait
-  - TraitAlias
-  - Type
-  - Union
-  - Use
+- Const
+- Enum
+- ExternCrate
+- Function
+- ForeignMod
+- Implementation
+- Macro
+- Module
+- Static
+- Struct
+- Trait
+- TraitAlias
+- Type
+- Union
+- Use
 
 > [!NOTE]
 > `syn::Item::Verbatim` support is planned but not yet implemented.
 
-### Maturity Inventory
+### Maturity Annotation Infrastructure
 
-The same item kinds are also tracked for `#[maturity]` annotations.
+#### Parsing
+
+- Development state parsing
+- `todo` attribute
+- `refactor` attribute
+- Unknown attribute support
+
+#### Collection
+
+- Annotated item inventory
+- Per-item annotation storage
+- Annotation statistics
+
+#### Reporting
+
+- Annotation summaries
+- Detailed annotation listings
+- Inventory reporting
 
 ## Output Example
+
 ```terminal
 ╭──────────────────────────────────────────────────────────────────────────────╮
-│                            Maturity Report v0.1.2                            │
+│                            Maturity Report v0.2.0                            │
 ╰──────────────────────────────────────────────────────────────────────────────╯
-Inventory counting   Implemented (partial)
-Scoring              Not Implemented
-Analysis             Not Implemented
+Inventory Collection  Implemented
+Annotation Collection In Progress
+Scoring               Planned
+Analysis              Planned
 
 Project
 --------------------------------------------------------------------------------
-Name                 maturity
-File                 59
-Rust Files           17
+Name                  showcase
+File                  11
+Rust Files            8
 
+Report
+--------------------------------------------------------------------------------
+Items
+--------------------------------------------------------------------------------
 ╭───────────────────────────┬───────────────────────┬──────────────────────────╮
 │ Item                      ┆ Total Count           ┆ Maturity Count           │
 ╞═══════════════════════════╪═══════════════════════╪══════════════════════════╡
-│ Enums                     ┆                     3 ┆                        3 │
+│ Const                     ┆                     2 ┆                        2 │
 ├╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┤
-│ Functions                 ┆                     6 ┆                        3 │
+│ Enum                      ┆                     1 ┆                        1 │
 ├╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┤
-│ Implementations           ┆                    15 ┆                        0 │
+│ Function                  ┆                    10 ┆                        6 │
 ├╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┤
-│ Modules                   ┆                    12 ┆                        0 │
+│ Implementation            ┆                     3 ┆                        0 │
 ├╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┤
-│ Structs                   ┆                     8 ┆                        8 │
+│ Module                    ┆                     6 ┆                        0 │
 ├╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┤
-│ Types                     ┆                     1 ┆                        1 │
+│ Struct                    ┆                     1 ┆                        1 │
 ├╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┤
-│ Uses                      ┆                    37 ┆                        0 │
+│ Use                       ┆                    15 ┆                        0 │
 ╰───────────────────────────┴───────────────────────┴──────────────────────────╯
+Implementation Items
+--------------------------------------------------------------------------------
+╭───────────────────────┬─────────────────────────┬────────────────────────────╮
+│ Item                  ┆ Total Count             ┆ Maturity Count             │
+╞═══════════════════════╪═════════════════════════╪════════════════════════════╡
+│ Function              ┆                       2 ┆                          1 │
+╰───────────────────────┴─────────────────────────┴────────────────────────────╯
+```
+
 ---
 
 ## Installation
 
 ### Cargo Plugin
+
 ```bash
 cargo install cargo-maturity
 ```
 
-#### Usage:
+#### Usage
+
 ```bash
 cargo maturity
 ```
 
 ### Standalone Cli
+
 ```bash
 cargo install maturity-cli
 ```
 
-#### Usage:
+#### Usage
+
 ```bash
 maturity
 ```
@@ -127,11 +165,13 @@ maturity
 The `maturity` ecosystem currently consists of 5 crates:
 
 ### Core functionality
+
 - maturity-macro
 - maturity-core
 - maturity-report
 
 ### Interfaces
+
 - cargo-maturity
 - maturity-cli
 
@@ -201,6 +241,7 @@ The goal is to make the development state of a project visible, reportable, and 
 Future releases aim to support richer maturity annotations
 
 Example: (might change for a better variant)
+
 ```rust
 #[maturity(
   state = "stable",
@@ -230,11 +271,13 @@ Additional information can be found in:
 ---
 
 ## Security
+
 See: [Security](SECURITY.md)
 
 ---
 
 ## Contributing
+
 See: [Contributing](CONTRIBUTING.md)
 
 ---
@@ -244,6 +287,8 @@ See: [Contributing](CONTRIBUTING.md)
 Primary repository: [Codeberg](https://codeberg.org/SANOTW/maturity.git)
 
 Mirror repository: [GitHub](https://github.com/SANOTW/maturity)
+
+---
 
 ## MSRV
 
@@ -257,6 +302,6 @@ Copyright 2026 SANOTW
 
 Licensed under the Apache License, Version 2.0.
 
-See the LICENSE file for details.
+See the [LICENSE](LICENSE) file for details.
 
 ---

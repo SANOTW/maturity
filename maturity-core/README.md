@@ -1,3 +1,4 @@
+<!-- markdownlint-disable MD024-->
 # maturity-core
 
 This crate contains common data structures used across the workspace.
@@ -12,15 +13,40 @@ cargo add maturity-core
 
 ## Public Types
 
-### Structs
+### Inventory
+
+- `ItemKind`
+- `ItemPath`
+
+### Metrics
 
 - `FileMetric`
 - `ItemMetric`
 - `MetricCount`
 
-### Enums
+### Maturity Annotation
 
-- `ItemKind`
+#### States
+
+- `MaturityState`
+
+#### Attributes
+
+- `MaturityAttributes`
+- `KnownAttribute`
+- `UnknownAttribute`
+
+#### Inventory
+
+- `AnnotatedItemInfo`
+- `AnnotatedItemInventory`
+
+### Source Location
+
+- `SourceLocation`
+
+> [!NOTE]
+> `SourceLocation` is currently reserved for future use
 
 ## Learn More
 
