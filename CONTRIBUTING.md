@@ -1,4 +1,5 @@
 # Contributing
+
 Thank you for taking interest in `maturity`
 
 Suggestions, bug reports, documentation corrections, discussions, and experiments are all welcome.
@@ -6,6 +7,7 @@ Suggestions, bug reports, documentation corrections, discussions, and experiment
 The project is still in its early stages, so everything will keep changing. Feedback and alternative perspectives are valuable during this phase.
 
 ## Current Development Policy
+
 At the moment, direct code contributions and pull requests are not being accepted.
 The project is still highly experimental, and many implementations, APIs, and internal designs are subject to change as development continues.
 
