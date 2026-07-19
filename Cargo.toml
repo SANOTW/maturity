@@ -21,15 +21,15 @@ homepage = "https://codeberg.org/SANOTW/maturity.git"
 
 [workspace.dependencies]
 # Maturity or self dependencies
-maturity-macro = { version = "0.1.2", path = "maturity-macro" }
+maturity-macro = { version = "0.1.3", path = "maturity-macro" }
 maturity-core = { version = "0.2.0", path = "maturity-core" }
 maturity-report = { version = "0.2.0", path = "maturity-report" }
 # instead of locally now these are taken from the crates.io
 # cargo-maturity = { version = "0.1.2", path = "cargo-maturity" }
 # maturity-cli = { version = "0.1.2", path = "maturity-cli" }
 
-cargo-maturity = "0.1.3"
-maturity-cli = "0.1.3"
+cargo-maturity = "0.1.4"
+maturity-cli = "0.1.4"
 
 # Utilities
 # logging
